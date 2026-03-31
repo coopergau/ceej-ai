@@ -2,6 +2,10 @@ import { Phone, MessageSquare, Workflow, ArrowRight, Shield } from 'lucide-react
 import { useState } from 'react';
 
 function App() {
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+
   const [formData, setFormData] = useState({
     name: '',
     company: '',
@@ -10,10 +14,28 @@ function App() {
     message: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsSubmitting(true);
+  setSubmitStatus('idle');
+
+  try {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),
+    });
+
+    if (!res.ok) throw new Error('Failed');
+
+    setSubmitStatus('success');
+    setFormData({ name: '', company: '', email: '', service: '', message: '' });
+  } catch {
+    setSubmitStatus('error');
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
@@ -236,17 +258,29 @@ function App() {
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-[#a855f7] to-[#ec4899] text-white px-8 py-4 rounded-lg font-medium text-lg hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300 hover:scale-[1.02]"
+              disabled={isSubmitting}
+              className="w-full bg-gradient-to-r from-[#a855f7] to-[#ec4899] text-white px-8 py-4 rounded-lg font-medium text-lg hover:shadow-lg hover:shadow-purple-500/50 transition-all duration-300 hover:scale-[1.02] disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:scale-100"
             >
-              Send Message
+              {isSubmitting ? 'Sending...' : 'Send Message'}
             </button>
+
+            {submitStatus === 'success' && (
+              <p className="text-center text-green-400 text-sm mt-2">
+                ✓ Message sent! We'll get back to you within 24 hours.
+              </p>
+            )}
+            {submitStatus === 'error' && (
+              <p className="text-center text-red-400 text-sm mt-2">
+                Something went wrong. Please try again or email us directly.
+              </p>
+            )}
           </form>
         </div>
       </section>
 
       <footer className="border-t border-white/5 py-8 px-6">
         <div className="max-w-7xl mx-auto text-center text-gray-500 text-sm">
-          © 2024 Ceej AI. All rights reserved.
+          © 2026 Ceej AI. All rights reserved.
         </div>
       </footer>
     </div>
