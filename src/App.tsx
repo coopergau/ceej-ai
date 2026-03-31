@@ -198,11 +198,10 @@ function App() {
                 <input
                   type="text"
                   id="company"
-                  required
                   value={formData.company}
                   onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                   className="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#a855f7] focus:border-transparent transition-all text-white placeholder-gray-500"
-                  placeholder="Acme Inc."
+                  placeholder="Optional"
                 />
               </div>
             </div>
