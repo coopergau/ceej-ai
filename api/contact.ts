@@ -14,7 +14,9 @@ export default async function handler(req: Request) {
   });
 
   if (!makeResponse.ok) {
-    return new Response('Webhook failed', { status: 500 });
+    const errorBody = await makeResponse.text();
+    console.error('n8n error:', makeResponse.status, errorBody);
+    return new Response(`Webhook failed: ${makeResponse.status} - ${errorBody}`, { status: 500 });
   }
 
   return new Response(JSON.stringify({ success: true }), {
