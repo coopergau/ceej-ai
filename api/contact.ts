@@ -1,6 +1,9 @@
 export const config = { runtime: 'edge' };
 
 export default async function handler(req: Request) {
+  console.log('Webhook URL:', process.env.N8N_WEBHOOK_URL);
+
+
   if (req.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 });
   }
