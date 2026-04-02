@@ -7,7 +7,7 @@ export default async function handler(req: Request) {
 
   const body = await req.json();
 
-  const makeResponse = await fetch(process.env.MAKE_WEBHOOK_URL!, {
+  const makeResponse = await fetch(process.env.N8N_WEBHOOK_URL!, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
